@@ -1,0 +1,13 @@
+import os.path
+
+group = [Glob('*.c')]
+group += [Glob('*.s')]
+
+path = [
+    os.path.abspath('.'),
+    os.path.abspath('./Inc')
+]
+
+group += path
+
+Return('group')
