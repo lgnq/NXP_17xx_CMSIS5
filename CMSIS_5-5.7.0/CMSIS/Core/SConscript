@@ -5,7 +5,7 @@ group += [Glob('*.s')]
 
 path = [
     os.path.abspath('.'),
-    os.path.abspath('./Inc')
+    os.path.abspath('./Include')
 ]
 
 group += path
