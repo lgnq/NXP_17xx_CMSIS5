@@ -34,7 +34,7 @@ if PLATFORM == 'gcc':
     DEVICE = ' -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections'
     CFLAGS = DEVICE + ' -Dgcc'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
-    LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=mbed.map,-cref,-u,Reset_Handler -T ' + LD_SCRIPT
+    LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=mbed17xx.map,-cref,-u,Reset_Handler -T ' + LD_SCRIPT
 
     if BUILD == 'debug':
         CFLAGS += ' -O0 -gdwarf-2 -g'
@@ -60,7 +60,7 @@ env = Environment(
     AR=AR, ARFLAGS='-rc',
     CXX=CXX, CXXFLAGS=CXXFLAGS,
     LINK=LINK, LINKFLAGS=LFLAGS,
-    CCCOMSTR="Compiling $TARGET", LINKCOMSTR="Linking $TARGET",
+    # CCCOMSTR="Compiling $TARGET", LINKCOMSTR="Linking $TARGET",
 )
 
 build_dir = 'build/'
