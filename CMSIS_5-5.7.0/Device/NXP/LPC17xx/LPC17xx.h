@@ -1,12 +1,12 @@
 /**************************************************************************//**
  * @file     LPC17xx.h
- * @brief    CMSIS Cortex-M3 Core Peripheral Access Layer Header File for
+ * @brief    CMSIS Cortex-M3 Device Peripheral Access Layer Header File for
  *           NXP LPC17xx Device Series
- * @version: V1.09
- * @date:    25. July. 2011
+ * @version  V1.10
+ * @date     06. April 2011
  *
  * @note
- * Copyright (C) 2009 ARM Limited. All rights reserved.
+ * Copyright (C) 2009-2011 ARM Limited. All rights reserved.
  *
  * @par
  * ARM Limited (ARM) is supplying this software for use with Cortex-M
@@ -20,7 +20,8 @@
  * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  *
- ******************************************************************************/
+ *                                                            modified by Keil
+******************************************************************************/
 
 
 #ifndef __LPC17xx_H__
@@ -40,7 +41,9 @@
 typedef enum IRQn
 {
 /******  Cortex-M3 Processor Exceptions Numbers ***************************************************/
+  Reset_IRQn                    = -15,      /*!< 1 Reset Vector, invoked on PowerUp and warm reset*/
   NonMaskableInt_IRQn           = -14,      /*!< 2 Non Maskable Interrupt                         */
+  HardFault_IRQn                = -13,      /*!< 3  Hard Fault, all classes of Fault              */
   MemoryManagement_IRQn         = -12,      /*!< 4 Cortex-M3 Memory Management Interrupt          */
   BusFault_IRQn                 = -11,      /*!< 5 Cortex-M3 Bus Fault Interrupt                  */
   UsageFault_IRQn               = -10,      /*!< 6 Cortex-M3 Usage Fault Interrupt                */
@@ -83,8 +86,8 @@ typedef enum IRQn
   MCPWM_IRQn                    = 30,       /*!< Motor Control PWM Interrupt                      */
   QEI_IRQn                      = 31,       /*!< Quadrature Encoder Interface Interrupt           */
   PLL1_IRQn                     = 32,       /*!< PLL1 Lock (USB PLL) Interrupt                    */
-  USBActivity_IRQn				= 33,		/*!< USB Activity Interrupt 						  */
-  CANActivity_IRQn				= 34		/*!< CAN Activity Interrupt 						  */
+  USBActivity_IRQn              = 33,       /*!< USB Activity Interrupt 						  */
+  CANActivity_IRQn              = 34,       /*!< CAN Activity Interrupt 						  */
 } IRQn_Type;
 
 
@@ -359,42 +362,7 @@ typedef struct
   __IO uint8_t  FDR;
        uint8_t  RESERVED5[7];
   __IO uint8_t  TER;
-       uint8_t  RESERVED6[39];
-  __I  uint8_t  FIFOLVL;
 } LPC_UART_TypeDef;
-
-/** @brief  Universal Asynchronous Receiver Transmitter 0 (UART0) register structure definition */
-typedef struct
-{
-  union {
-  __I  uint8_t  RBR;
-  __O  uint8_t  THR;
-  __IO uint8_t  DLL;
-       uint32_t RESERVED0;
-  };
-  union {
-  __IO uint8_t  DLM;
-  __IO uint32_t IER;
-  };
-  union {
-  __I  uint32_t IIR;
-  __O  uint8_t  FCR;
-  };
-  __IO uint8_t  LCR;
-       uint8_t  RESERVED1[7];
-  __I  uint8_t  LSR;
-       uint8_t  RESERVED2[7];
-  __IO uint8_t  SCR;
-       uint8_t  RESERVED3[3];
-  __IO uint32_t ACR;
-  __IO uint8_t  ICR;
-       uint8_t  RESERVED4[3];
-  __IO uint8_t  FDR;
-       uint8_t  RESERVED5[7];
-  __IO uint8_t  TER;
-       uint8_t  RESERVED6[39];
-  __I  uint8_t  FIFOLVL;
-} LPC_UART0_TypeDef;
 
 /** @brief  Universal Asynchronous Receiver Transmitter 1 (UART1) register structure definition */
 typedef struct
@@ -434,8 +402,6 @@ typedef struct
   __IO uint8_t  ADRMATCH;
        uint8_t  RESERVED10[3];
   __IO uint8_t  RS485DLY;
-       uint8_t  RESERVED11[3];
-  __I  uint8_t  FIFOLVL;
 } LPC_UART1_TypeDef;
 
 /*------------- Serial Peripheral Interface (SPI) ----------------------------*/
