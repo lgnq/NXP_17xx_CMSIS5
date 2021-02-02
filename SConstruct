@@ -1,8 +1,52 @@
 # Some dependent packages
-import os.path
 import os
-import toolchain
+import os.path
 from os import path
+
+# toolchains options
+ARCH = 'ARM'
+CPU  = 'cortex-m3'
+
+PLATFORM  = 'gcc'
+EXEC_PATH = r'/usr/bin'
+BUILD     = 'debug'
+
+curDir = os.getcwd()
+PROJECT = path.join(curDir, 'mbed')
+TARGET     = PROJECT + '.elf'
+HEX_TARGET = PROJECT + '.hex'
+BIN_TARGET = PROJECT + '.bin'
+
+if PLATFORM == 'gcc':
+    # toolchains
+    PREFIX = 'arm-none-eabi-'
+
+    CC      = PREFIX + 'gcc'
+    AS      = PREFIX + 'gcc'
+    AR      = PREFIX + 'ar'
+    CXX     = PREFIX + 'g++'
+    LINK    = PREFIX + 'gcc'
+    SIZE    = PREFIX + 'size'
+    OBJDUMP = PREFIX + 'objdump'
+    OBJCPY  = PREFIX + 'objcopy'
+
+    TARGET_EXT = 'elf'
+    LD_SCRIPT = 'ldscript_rom_gnu.ld'
+
+    DEVICE = ' -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections'
+    CFLAGS = DEVICE + ' -Dgcc'
+    AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -Wa,-mimplicit-it=thumb '
+    LFLAGS = DEVICE + ' -nostartfiles -Wl,--gc-sections,-Map=mbed.map,-cref,-u,Reset_Handler -T ' + LD_SCRIPT
+
+    if BUILD == 'debug':
+        CFLAGS += ' -O0 -gdwarf-2 -g'
+        AFLAGS += ' -gdwarf-2'
+    else:
+        CFLAGS += ' -O2'
+
+    CXXFLAGS = CFLAGS
+    POST_ACTION = OBJCPY + ' -O binary $TARGET rtthread.bin\n' + SIZE + ' $TARGET \n'
+
 
 # Application some variables
 src = []
@@ -11,22 +55,14 @@ subsrc = []
 subsrctype = type(subsrc)
 srctype = type(src)
 
-curDir = os.getcwd()
-# PROJECT = path.join(curDir, 'discovery')
-PROJECT = 'discovery'
-TARGET = PROJECT + '.elf'
-HEX_TARGET = PROJECT + '.hex'
-BIN_TARGET = PROJECT + '.bin'
-
 # Set the runtime environment
 env = Environment(
     tools=['mingw'],
-    PLATFORM = toolchain.PLATFORM,
-    AS=toolchain.AS, ASFLAGS=toolchain.AFLAGS,
-    CC=toolchain.CC, CCFLAGS=toolchain.CFLAGS,
-    AR=toolchain.AR, ARFLAGS='-rc',
-    CXX=toolchain.CXX, CXXFLAGS=toolchain.CXXFLAGS,
-    LINK=toolchain.LINK, LINKFLAGS=toolchain.LFLAGS,
+    AS=AS, ASFLAGS=AFLAGS,
+    CC=CC, CCFLAGS=CFLAGS,
+    AR=AR, ARFLAGS='-rc',
+    CXX=CXX, CXXFLAGS=CXXFLAGS,
+    LINK=LINK, LINKFLAGS=LFLAGS,
     CCCOMSTR="Compiling $TARGET", LINKCOMSTR="Linking $TARGET",
 )
 
@@ -50,9 +86,10 @@ for item in subsrc:
 
 # Building
 out = env.Program(TARGET, src, CPPPATH=path)
+env.SideEffect(PROJECT+'.map', out)
 
 # Post Action
-a1 = env.AddPostAction(TARGET, toolchain.OBJCPY + ' -Oihex ' + '$TARGET ' + HEX_TARGET)
-a2 = env.AddPostAction(TARGET, toolchain.OBJCPY + ' -Obinary -S ' + '$TARGET ' + BIN_TARGET)
+a1 = env.AddPostAction(TARGET, OBJCPY + ' -Oihex ' + '$TARGET ' + HEX_TARGET)
+a2 = env.AddPostAction(TARGET, OBJCPY + ' -Obinary -S ' + '$TARGET ' + BIN_TARGET)
 env.SideEffect(HEX_TARGET, a1)
 env.SideEffect(BIN_TARGET, a2)
