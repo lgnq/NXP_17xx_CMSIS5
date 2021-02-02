@@ -1,6 +1,4 @@
-# Some dependent packages
 import os
-import os.path
 from os import path
 
 # toolchains options
@@ -12,7 +10,7 @@ EXEC_PATH = r'/usr/bin'
 BUILD     = 'debug'
 
 curDir = os.getcwd()
-PROJECT = path.join(curDir, 'mbed')
+PROJECT = path.join(curDir, 'mbed17xx')
 TARGET     = PROJECT + '.elf'
 HEX_TARGET = PROJECT + '.hex'
 BIN_TARGET = PROJECT + '.bin'
@@ -26,11 +24,11 @@ if PLATFORM == 'gcc':
     AR      = PREFIX + 'ar'
     CXX     = PREFIX + 'g++'
     LINK    = PREFIX + 'gcc'
+    
     SIZE    = PREFIX + 'size'
     OBJDUMP = PREFIX + 'objdump'
     OBJCPY  = PREFIX + 'objcopy'
 
-    TARGET_EXT = 'elf'
     LD_SCRIPT = 'ldscript_rom_gnu.ld'
 
     DEVICE = ' -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections'
@@ -45,7 +43,6 @@ if PLATFORM == 'gcc':
         CFLAGS += ' -O2'
 
     CXXFLAGS = CFLAGS
-    POST_ACTION = OBJCPY + ' -O binary $TARGET rtthread.bin\n' + SIZE + ' $TARGET \n'
 
 
 # Application some variables
@@ -66,7 +63,7 @@ env = Environment(
     CCCOMSTR="Compiling $TARGET", LINKCOMSTR="Linking $TARGET",
 )
 
-build_dir = 'build/' + str(env['PLATFORM']) + '/'
+build_dir = 'build/'
 
 # Search all SConscript file
 for root, dirs, files in os.walk(str(Dir('#'))):
@@ -93,3 +90,5 @@ a1 = env.AddPostAction(TARGET, OBJCPY + ' -Oihex ' + '$TARGET ' + HEX_TARGET)
 a2 = env.AddPostAction(TARGET, OBJCPY + ' -Obinary -S ' + '$TARGET ' + BIN_TARGET)
 env.SideEffect(HEX_TARGET, a1)
 env.SideEffect(BIN_TARGET, a2)
+
+env.AddPostAction(TARGET, SIZE + ' $TARGET')
