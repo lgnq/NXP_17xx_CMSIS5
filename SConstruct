@@ -1,6 +1,5 @@
 import os
 
-# toolchains options
 ARCH = 'ARM'
 CPU  = 'cortex-m3'
 
@@ -15,7 +14,6 @@ HEX_TARGET = PROJECT + '.hex'
 BIN_TARGET = PROJECT + '.bin'
 
 if PLATFORM == 'gcc':
-    # toolchains
     PREFIX = 'arm-none-eabi-'
 
     CC      = PREFIX + 'gcc'
@@ -43,29 +41,36 @@ if PLATFORM == 'gcc':
 
     CXXFLAGS = CFLAGS
 
+# Set the runtime environment
+env = Environment(
+    tools     = ['mingw'],
+
+    AS        = AS, 
+    CC        = CC, 
+    AR        = AR, 
+    CXX       = CXX, 
+    LINK      = LINK, 
+
+    ASFLAGS   = AFLAGS,
+    CCFLAGS   = CFLAGS,
+    ARFLAGS   = '-rc',
+    CXXFLAGS  = CXXFLAGS,
+    LINKFLAGS = LFLAGS,
+
+    ASCOMSTR   = "Compiling $TARGET", 
+    CCCOMSTR   = "Compiling $TARGET", 
+    LINKCOMSTR = "Linking $TARGET",
+)
 
 # Application some variables
 src = []
 inc = []
 
-# Set the runtime environment
-env = Environment(
-    tools=['mingw'],
-    AS=AS, ASFLAGS=AFLAGS,
-    CC=CC, CCFLAGS=CFLAGS,
-    AR=AR, ARFLAGS='-rc',
-    CXX=CXX, CXXFLAGS=CXXFLAGS,
-    LINK=LINK, LINKFLAGS=LFLAGS,
-    # CCCOMSTR="Compiling $TARGET", LINKCOMSTR="Linking $TARGET",
-)
-
-build_dir = 'build/'
-
-# Search all SConscript file
+# Search all SConscript file and add src/header files
 for root, dirs, files in os.walk(str(Dir('#'))):
     for item in files:
         if item == 'SConscript':
-            temp = SConscript(os.path.join(root, item), variant_dir = build_dir + root, duplicate=0)
+            temp = SConscript(os.path.join(root, item), variant_dir = 'build/' + root, duplicate=0)
 
             src += temp['src']
             inc += temp['inc']          
