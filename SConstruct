@@ -7,8 +7,7 @@ PLATFORM  = 'gcc'
 EXEC_PATH = r'/usr/bin'
 BUILD     = 'debug'
 
-curDir = os.getcwd()
-PROJECT = os.path.join(curDir, 'mbed17xx')
+PROJECT    = 'mbed17xx'
 TARGET     = PROJECT + '.elf'
 HEX_TARGET = PROJECT + '.hex'
 BIN_TARGET = PROJECT + '.bin'
