@@ -1,13 +1,14 @@
 import os.path
 
-group = [Glob('*.c')]
-group += [Glob('*.s')]
+src   = [Glob('*.c')]
+src  += [Glob('*.s')]
 
-path = [
+inc   = [
     os.path.abspath('.'),
-    os.path.abspath('./Inc')
+    os.path.abspath('./Inc'),
+    os.path.abspath('./Include')
 ]
 
-group += path
+group = {'src' : src, 'inc' : inc}
 
 Return('group')

@@ -47,10 +47,7 @@ if PLATFORM == 'gcc':
 
 # Application some variables
 src = []
-path = []
-subsrc = []
-subsrctype = type(subsrc)
-srctype = type(src)
+inc = []
 
 # Set the runtime environment
 env = Environment(
@@ -70,19 +67,12 @@ for root, dirs, files in os.walk(str(Dir('#'))):
     for item in files:
         if item == 'SConscript':
             temp = SConscript(os.path.join(root, item), variant_dir = build_dir + root, duplicate=0)
-            
-            if isinstance(temp, subsrctype):
-                subsrc += temp
 
-# Add all h files to CPPPATH and add all c files to src
-for item in subsrc:
-    if isinstance(item, str):
-        path.append(item)
-    elif isinstance(item, srctype):
-        src += item
+            src += temp['src']
+            inc += temp['inc']          
 
 # Building
-out = env.Program(TARGET, src, CPPPATH=path)
+out = env.Program(TARGET, src, CPPPATH = inc)
 env.SideEffect(PROJECT+'.map', out)
 
 # Post Action
