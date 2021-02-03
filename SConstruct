@@ -1,5 +1,4 @@
 import os
-from os import path
 
 # toolchains options
 ARCH = 'ARM'
@@ -10,7 +9,7 @@ EXEC_PATH = r'/usr/bin'
 BUILD     = 'debug'
 
 curDir = os.getcwd()
-PROJECT = path.join(curDir, 'mbed17xx')
+PROJECT = os.path.join(curDir, 'mbed17xx')
 TARGET     = PROJECT + '.elf'
 HEX_TARGET = PROJECT + '.hex'
 BIN_TARGET = PROJECT + '.bin'
