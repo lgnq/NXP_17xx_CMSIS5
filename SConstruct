@@ -69,7 +69,7 @@ inc = []
 for root, dirs, files in os.walk(str(Dir('#'))):
     for item in files:
         if item == 'SConscript':
-            temp = SConscript(os.path.join(root, item), variant_dir = 'build/' + root, duplicate=0)
+            temp = SConscript(os.path.join(root, item), variant_dir = 'build/' + root, duplicate = 0)
 
             src += temp['src']
             inc += temp['inc']          
